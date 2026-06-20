@@ -1,0 +1,2 @@
+## SprawlBlock
+A smart cybersecurity project that focuses on cross-platform identity correlation and privilege abuse in hybrid environments — connecting signals across AD, cloud IAM, and SaaS to detect risks that no single platform reveals alone.
