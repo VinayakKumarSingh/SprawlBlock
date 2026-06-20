@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SprawlBlock | Identity Security & Entitlement Graph</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    
+    <!-- Third-party CDN libraries -->
+    <!-- vis-network for interactive canvas graph -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <!-- marked for parsing Markdown summaries from LLM -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M12 8v4"/>
+                    <path d="M12 16h.01"/>
+                </svg>
+                <div class="brand-text">
+                    <h1>SprawlBlock</h1>
+                    <span>Identity Analytics</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-tab="overview">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                    <span>Overview</span>
+                </button>
+                <button class="nav-item" data-tab="incidents">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    <span>Incidents</span>
+                </button>
+                <button class="nav-item" data-tab="heatmap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+                    <span>Privilege Heatmap</span>
+                </button>
+                <button class="nav-item" data-tab="risk-list">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    <span>Identity Risk List</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="btn-run-simulation" class="btn btn-secondary btn-full">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    <span>Reset Simulation</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Content Area -->
+        <main class="main-content">
+            <!-- Global Status Bar -->
+            <header class="main-header">
+                <div class="header-title">
+                    <h2 id="view-title">Overview Dashboard</h2>
+                </div>
+                <div class="header-actions">
+                    <span class="system-indicator">
+                        <span class="indicator-dot green"></span>
+                        <span>Engine Status: Active</span>
+                    </span>
+                </div>
+            </header>
+
+            <!-- TABS CONTAINER -->
+            <div class="tab-content-container">
+                
+                <!-- 1. OVERVIEW TAB -->
+                <section id="tab-overview" class="tab-pane active">
+                    <!-- Metric Cards -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <span class="metric-label">Identities Analysed</span>
+                            <div class="metric-value" id="stat-identities">-</div>
+                            <span class="metric-trend">Total Root Employees</span>
+                        </div>
+                        <div class="metric-card border-critical">
+                            <span class="metric-label">Active Incidents</span>
+                            <div class="metric-value text-critical" id="stat-incidents">-</div>
+                            <span class="metric-trend" id="stat-critical-incidents">- Critical Clusters</span>
+                        </div>
+                        <div class="metric-card border-warning">
+                            <span class="metric-label">Average Risk Score</span>
+                            <div class="metric-value text-warning" id="stat-avg-risk">-</div>
+                            <span class="metric-trend">Hybrid ML + Compliance</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Monitored Accounts</span>
+                            <div class="metric-value" id="stat-accounts">-</div>
+                            <span class="metric-sub-trends" id="stat-accounts-detail">AD / AWS / Okta</span>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <!-- Top Risks List -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Critical Risk Identities</h3>
+                                <button class="btn btn-text view-all-trigger" data-target-tab="risk-list">View All</button>
+                            </div>
+                            <div class="table-container">
+                                <table class="data-table" id="table-overview-risks">
+                                    <thead>
+                                        <tr>
+                                            <th>Identity</th>
+                                            <th>Title</th>
+                                            <th>Department</th>
+                                            <th>ML Score</th>
+                                            <th>Hybrid Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td colspan="5" class="text-center text-muted">Loading risks...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Mini Heatmap Callout -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Department Risk Concentration</h3>
+                                <button class="btn btn-text view-all-trigger" data-target-tab="heatmap">Heatmap Details</button>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted text-sm mb-4">Cross-platform integration density and security risk across organizational departments.</p>
+                                <div id="mini-heatmap-container" class="grid-heatmap-mini">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 2. INCIDENTS TAB (Incident Drill-Down) -->
+                <section id="tab-incidents" class="tab-pane">
+                    <div class="incidents-split-layout">
+                        <!-- Left Panel: Incident Clusters -->
+                        <div class="incidents-sidebar card">
+                            <div class="card-header">
+                                <h3>Incident Clusters</h3>
+                            </div>
+                            <div class="incidents-list" id="incident-list-container">
+                                <!-- Populated dynamically -->
+                                <div class="text-center text-muted p-4">Loading incidents...</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Drill Down Details -->
+                        <div class="incidents-drilldown card" id="incident-detail-panel">
+                            <!-- Fallback default state -->
+                            <div class="empty-state" id="incident-empty-state">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+                                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                                </svg>
+                                <h4>No Incident Selected</h4>
+                                <p class="text-muted">Select an incident from the left panel to review remediation recommendations, affected assets, and apply automatic controls.</p>
+                            </div>
+                            
+                            <!-- Selected Incident View (hidden initially) -->
+                            <div class="drilldown-content hidden" id="incident-detail-content">
+                                <div class="drilldown-header">
+                                    <div class="title-area">
+                                        <div class="incident-badge-row">
+                                            <span class="badge" id="incident-detail-id">INC-101</span>
+                                            <span class="badge" id="incident-detail-severity">CRITICAL</span>
+                                        </div>
+                                        <h3 id="incident-detail-title">Privilege Escalation Activity</h3>
+                                    </div>
+                                    <div class="action-area">
+                                        <button id="btn-remediate" class="btn btn-primary">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                            <span>Apply Remediation Controls</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="drilldown-body">
+                                    <!-- LLM Summary Box -->
+                                    <div class="narrative-section">
+                                        <h4>AI Security Narrative & Root Cause</h4>
+                                        <div class="narrative-box markdown-body" id="incident-detail-narrative">
+                                            <!-- Rendered Markdown -->
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Affected Identities (Blast Radius) -->
+                                    <div class="blast-radius-section">
+                                        <h4 id="blast-radius-title">Blast Radius (Affected Identities)</h4>
+                                        <div class="table-container max-h-60">
+                                            <table class="data-table" id="table-incident-users">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Identity</th>
+                                                        <th>Hybrid Score</th>
+                                                        <th>Access Freq</th>
+                                                        <th>Platform Spread</th>
+                                                        <th>Total Privileges</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Dynamic rows -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 3. HEATMAP TAB -->
+                <section id="tab-heatmap" class="tab-pane">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Cross-Platform Privilege & Risk Density</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted mb-6">
+                                Matrix intersecting corporate departments with target integrations. Cells indicate: **[Active Accounts] / [Avg Hybrid Risk]**. 
+                                Click any cell to isolate the corresponding employees below.
+                            </p>
+                            
+                            <div class="heatmap-wrapper">
+                                <table class="heatmap-table" id="heatmap-matrix-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Department</th>
+                                            <th>Active Directory</th>
+                                            <th>AWS Cloud IAM</th>
+                                            <th>Okta Identity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="heatmap-tbody">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="heatmap-legend mt-4">
+                                <span>Risk Level:</span>
+                                <span class="legend-box" style="background-color: #1e293b;"></span> <span>None</span>
+                                <span class="legend-box" style="background-color: #065f46;"></span> <span>Low (<40)</span>
+                                <span class="legend-box" style="background-color: #92400e;"></span> <span>Medium (40-69)</span>
+                                <span class="legend-box" style="background-color: #9a3412;"></span> <span>High (70-84)</span>
+                                <span class="legend-box" style="background-color: #991b1b;"></span> <span>Critical (&ge;85)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtered Heatmap Grid Users list (hidden until cell clicked) -->
+                    <div class="card mt-6 hidden" id="heatmap-filtered-card">
+                        <div class="card-header">
+                            <h3 id="heatmap-filter-title">Department Matrix View</h3>
+                            <button id="btn-clear-heatmap-filter" class="btn btn-secondary btn-sm">Clear Filter</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="table-heatmap-users">
+                                <thead>
+                                    <tr>
+                                        <th>Identity ID</th>
+                                        <th>Title</th>
+                                        <th>AD ID</th>
+                                        <th>AWS ID</th>
+                                        <th>Okta ID</th>
+                                        <th>Hybrid Risk Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="heatmap-users-tbody">
+                                    <!-- Filtered entries -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 4. RISK LIST TAB -->
+                <section id="tab-risk-list" class="tab-pane">
+                    <div class="card">
+                        <div class="card-header filter-row">
+                            <!-- Search -->
+                            <div class="filter-group">
+                                <label for="input-search">Search Identity</label>
+                                <input type="text" id="input-search" placeholder="Search ID, title, or department...">
+                            </div>
+                            <!-- Department Filter -->
+                            <div class="filter-group">
+                                <label for="select-dept">Department</label>
+                                <select id="select-dept">
+                                    <option value="">All Departments</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="IT Security">IT Security</option>
+                                    <option value="HR">HR</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Sales">Sales</option>
+                                </select>
+                            </div>
+                            <!-- Status Filter -->
+                            <div class="filter-group">
+                                <label for="select-status">Compliance State</label>
+                                <select id="select-status">
+                                    <option value="">All</option>
+                                    <option value="Anomalies">Violations Only</option>
+                                    <option value="Clean">No Violations</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="data-table" id="table-risk-list">
+                                <thead>
+                                    <tr>
+                                        <th class="sortable" data-sort="emp_id">Identity ID</th>
+                                        <th class="sortable" data-sort="title">Title</th>
+                                        <th class="sortable" data-sort="department">Department</th>
+                                        <th class="sortable" data-sort="last_login">Last Login</th>
+                                        <th class="sortable" data-sort="ml_risk_score">ML Risk</th>
+                                        <th class="sortable active desc" data-sort="hybrid_risk_score">Hybrid Risk Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Simple Pagination controls -->
+                        <div class="pagination-bar">
+                            <span class="pagination-info" id="pagination-info">Showing 0-0 of 0</span>
+                            <div class="pagination-buttons">
+                                <button id="btn-prev-page" class="btn btn-secondary btn-sm" disabled>Previous</button>
+                                <button id="btn-next-page" class="btn btn-secondary btn-sm" disabled>Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+            </div>
+        </main>
+    </div>
+
+    <!-- DETAILED USER INSPECTOR PANEL (Sliding Detail Drawer) -->
+    <div id="identity-detail-drawer" class="detail-drawer">
+        <div class="drawer-overlay"></div>
+        <div class="drawer-content">
+            <header class="drawer-header">
+                <div class="drawer-title-row">
+                    <h3 id="drawer-user-id">emp_001</h3>
+                    <span id="drawer-user-badge" class="badge">CRITICAL</span>
+                </div>
+                <button id="btn-close-drawer" class="btn btn-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </header>
+            
+            <div class="drawer-body">
+                <!-- Tabs within detail drawer -->
+                <div class="drawer-tabs">
+                    <button class="drawer-tab-btn active" data-drawer-tab="profile">Identity Details</button>
+                    <button class="drawer-tab-btn" data-drawer-tab="graph">Entitlement Graph</button>
+                    <button class="drawer-tab-btn" data-drawer-tab="audit">Audit Log Trail</button>
+                </div>
+                
+                <!-- Drawer Tab 1: Profile Details -->
+                <div id="drawer-tab-profile" class="drawer-tab-pane active">
+                    <!-- Basic info cards -->
+                    <div class="drawer-grid">
+                        <div class="info-card">
+                            <span class="label">Job Title</span>
+                            <span class="value" id="drawer-meta-title">-</span>
+                        </div>
+                        <div class="info-card">
+                            <span class="label">Department</span>
+                            <span class="value" id="drawer-meta-department">-</span>
+                        </div>
+                        <div class="info-card">
+                            <span class="label">HR Status</span>
+                            <span class="value" id="drawer-meta-hr-status">-</span>
+                        </div>
+                        <div class="info-card">
+                            <span class="label">Last Activity</span>
+                            <span class="value" id="drawer-meta-last-login">-</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Integration Accounts Status -->
+                    <h4 class="section-title">Platform Accounts Mapping</h4>
+                    <div class="platform-cards-row">
+                        <div class="platform-status-card" id="card-status-ad">
+                            <span class="platform-name">Active Directory</span>
+                            <span class="account-id" id="drawer-acct-ad">-</span>
+                            <span class="status-indicator" id="drawer-status-ad">-</span>
+                        </div>
+                        <div class="platform-status-card" id="card-status-aws">
+                            <span class="platform-name">AWS Cloud IAM</span>
+                            <span class="account-id" id="drawer-acct-aws">-</span>
+                            <span class="status-indicator" id="drawer-status-aws">-</span>
+                        </div>
+                        <div class="platform-status-card" id="card-status-okta">
+                            <span class="platform-name">Okta Identity</span>
+                            <span class="account-id" id="drawer-acct-okta">-</span>
+                            <span class="status-indicator" id="drawer-status-okta">-</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Score Details -->
+                    <h4 class="section-title">ML Risk Features</h4>
+                    <div class="risk-features-box">
+                        <div class="feature-item">
+                            <span>Access Event Frequency</span>
+                            <strong id="drawer-feat-freq">-</strong>
+                        </div>
+                        <div class="feature-item">
+                            <span>Platform Spread</span>
+                            <strong id="drawer-feat-spread">-</strong>
+                        </div>
+                        <div class="feature-item">
+                            <span>Privilege-to-Usage Ratio</span>
+                            <strong id="drawer-feat-ratio">-</strong>
+                        </div>
+                        <div class="feature-item">
+                            <span>Total Assigned Entitlements</span>
+                            <strong id="drawer-feat-total">-</strong>
+                        </div>
+                    </div>
+                    
+                    <!-- Compliance Violations -->
+                    <h4 class="section-title">Compliance Mapping & Violations</h4>
+                    <div class="violations-list" id="drawer-violations-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Drawer Tab 2: vis.js entitlement graph -->
+                <div id="drawer-tab-graph" class="drawer-tab-pane">
+                    <p class="text-muted text-sm mb-2">Visualizing directed paths from the human identity to platform account, group bindings, and terminal permissions.</p>
+                    <div class="graph-toolbar">
+                        <button id="btn-fit-graph" class="btn btn-secondary btn-sm">Zoom to Fit</button>
+                        <span class="text-xs text-muted" id="graph-node-count">0 nodes, 0 edges</span>
+                    </div>
+                    <div id="vis-graph-canvas" class="graph-canvas-container">
+                        <div class="loading-overlay">Building graph visualization canvas...</div>
+                    </div>
+                </div>
+                
+                <!-- Drawer Tab 3: User Audit Log Trail -->
+                <div id="drawer-tab-audit" class="drawer-tab-pane">
+                    <div class="table-container max-h-drawer-table">
+                        <table class="data-table" id="table-user-audit">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Platform</th>
+                                    <th>Account ID</th>
+                                    <th>Action Logged</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dynamic audit entries -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GLOBAL OPERATION PROGRESS MODAL (Remediation Logs) -->
+    <div id="modal-remediation" class="modal">
+        <div class="modal-content card">
+            <header class="modal-header">
+                <h3>Applying Remediation Playbook...</h3>
+                <div class="spinner small inline-spinner" id="remediation-spinner"></div>
+            </header>
+            <div class="modal-body">
+                <p class="text-muted mb-4">Executing API instructions and rebuilding the Isolation Forest ML structures.</p>
+                <div class="log-console" id="remediation-log-console">
+                    <!-- Logs printed here in real-time -->
+                </div>
+            </div>
+            <footer class="modal-footer">
+                <button id="btn-close-remediation-modal" class="btn btn-primary" disabled>Close Console</button>
+            </footer>
+        </div>
+    </div>
+    <!-- Custom JavaScript Controller -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
