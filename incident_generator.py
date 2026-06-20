@@ -27,9 +27,9 @@ def generate_remediation_narrative(cluster_title, affected_users):
     try:
         client = genai.Client(api_key=api_key)
         
-        # Limit the payload to prevent token explosion on massive clusters, though we pass it as requested
-        # For a massive cluster, passing all users directly might exceed limits, but we follow the spec.
-        json_data = json.dumps(affected_users, indent=2)
+        # For a massive cluster, passing all users directly might exceed limits.
+        sample_users = affected_users[:5]
+        json_data = json.dumps(sample_users, indent=2)
         
         prompt = (
             f"You are a Cloud Security Architect responding to an incident cluster titled '{cluster_title}'. "
@@ -108,6 +108,7 @@ def generate_incidents(risk_data):
             severity = "CRITICAL"
             
         llm_narrative = generate_remediation_narrative(title, users)
+        time.sleep(4)
             
         incident = {
             "incident_id": f"INC-{incident_counter}",
