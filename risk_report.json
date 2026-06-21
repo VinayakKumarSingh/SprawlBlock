@@ -518,20 +518,6 @@
         "framework_violations": []
     },
     {
-        "emp_id": "emp_005",
-        "hybrid_risk_score": 81.23,
-        "ml_risk_score": 56.23,
-        "features": {
-            "access_frequency": 3,
-            "platform_spread": 1,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
         "emp_id": "emp_150",
         "hybrid_risk_score": 79.6,
         "ml_risk_score": 79.6,
@@ -566,188 +552,6 @@
             "total_privileges": 0
         },
         "framework_violations": []
-    },
-    {
-        "emp_id": "emp_007",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_008",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_009",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_012",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_017",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_018",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_019",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_024",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_026",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_027",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_032",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_033",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
-    },
-    {
-        "emp_id": "emp_036",
-        "hybrid_risk_score": 72.99,
-        "ml_risk_score": 47.99,
-        "features": {
-            "access_frequency": 0,
-            "platform_spread": 0,
-            "privilege_to_usage_ratio": 0.0,
-            "total_privileges": 0
-        },
-        "framework_violations": [
-            "NIST AC-2 / CIS 5"
-        ]
     },
     {
         "emp_id": "emp_059",
@@ -1115,6 +919,18 @@
         "framework_violations": []
     },
     {
+        "emp_id": "emp_005",
+        "hybrid_risk_score": 56.23,
+        "ml_risk_score": 56.23,
+        "features": {
+            "access_frequency": 3,
+            "platform_spread": 1,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
         "emp_id": "emp_190",
         "hybrid_risk_score": 56.23,
         "ml_risk_score": 56.23,
@@ -1205,6 +1021,162 @@
         "features": {
             "access_frequency": 7,
             "platform_spread": 3,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_007",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_008",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_009",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_012",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_017",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_018",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_019",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_024",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_026",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_027",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_032",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_033",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
+            "privilege_to_usage_ratio": 0.0,
+            "total_privileges": 0
+        },
+        "framework_violations": []
+    },
+    {
+        "emp_id": "emp_036",
+        "hybrid_risk_score": 47.99,
+        "ml_risk_score": 47.99,
+        "features": {
+            "access_frequency": 0,
+            "platform_spread": 0,
             "privilege_to_usage_ratio": 0.0,
             "total_privileges": 0
         },
