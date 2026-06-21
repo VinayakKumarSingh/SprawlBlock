@@ -4,12 +4,12 @@
         "title": "Orphaned Account & Lifecycle Gaps (NIST AC-2)",
         "severity": "HIGH",
         "affected_identities_count": 1,
-        "llm_executive_summary": "The incident cluster 'Orphaned Account & Lifecycle Gaps (NIST AC-2)' has identified a high-risk user account, 'emp_026', with a hybrid risk score of 70.78 and a machine learning risk score of 45.78. This indicates a significant potential blast radius, as the user's access frequency is relatively low at 3, yet they have a high privilege to usage ratio of 0.0, suggesting underutilization or potential misuse of assigned privileges. The framework violations for NIST AC-2 and CIS 5 further underscore the severity of this incident, as these controls are designed to ensure proper account management and access control.\n\nUpon reviewing the telemetry data for 'emp_026', it becomes apparent that their access patterns and privilege assignments are not well-correlated with their actual usage. The user has a platform spread of 1, indicating that they are only accessing a single platform, which may be an indicator of targeted or malicious activity. Furthermore, their total privileges are listed as 0, yet they still have an assigned risk score, suggesting a potential discrepancy in the assignment or revocation of privileges. A deeper analysis of the graph privileges and access logs is necessary to fully understand the extent of this issue, but initial indications suggest a lack of proper lifecycle management and potential security vulnerabilities.\n\nTo immediately mitigate the risks associated with 'emp_026', the following CLI/PowerShell commands can be executed: \n```bash\naws iam remove-user-from-group --user-name emp_026 --group-name Admins\n```\n```powershell\nRemove-ADGroupMember -Identity Admins -Members emp_026\n```\n```powershell\nInvoke-OktaRemoveUserFromGroup -userName emp_026 -groupId 0oa12345\n```\nAdditionally, to fully revoke access, the following commands can be used:\n```bash\naws iam delete-access-key --user-name emp_026\n```\n```powershell\nGet-ADUser emp_026 | Disable-ADAccount\n```\n```powershell\nInvoke-OktaDeactivateUser -userName emp_026\n```\nThese commands will remove 'emp_026' from administrative groups, delete their access keys, disable their AD account, and deactivate their Okta account, effectively revoking their access to sensitive platforms and data.",
+        "llm_executive_summary": "The incident cluster 'Orphaned Account & Lifecycle Gaps (NIST AC-2)' has identified a high-risk user account, 'emp_026', with a hybrid risk score of 69.44 and a machine learning risk score of 44.44. The blast radius of this incident is relatively contained, with only one affected user identified. However, the risk summary indicates a potential security threat due to the account's inactivity and lack of privileges, which may be a sign of an orphaned account that has not been properly decommissioned. The account's framework violations, specifically NIST AC-2 and CIS 5, suggest that the account may not be compliant with access control and identity management standards.\n\nCorrelating the telemetry data with graph privileges, we observe that the user 'emp_026' has an access frequency of 3, indicating some level of activity, but a privilege to usage ratio of 0.0, suggesting that the account has not been utilizing its assigned privileges. The total privileges assigned to the account are 0, which may indicate that the account has been orphaned and not properly updated. The platform spread of 1 suggests that the account is only active on a single platform, which may limit the scope of the incident. However, the fact that the account has not been properly decommissioned and has a non-zero risk score still poses a security risk. Further analysis of the account's activity and privileges is necessary to determine the root cause of the incident and to identify potential security vulnerabilities.\n\nTo immediately revoke access for the specific platforms involved, the following CLI/PowerShell commands can be executed: \n`aws iam delete-user --user-name emp_026` to revoke AWS access, \n`Remove-ADUser -Identity emp_026 -Confirm:$false` to revoke Active Directory access, and \n`okta user lifecycle delete --uid emp_026` to revoke Okta access. Additionally, the following commands can be used to verify that the account has been properly removed: \n`aws iam get-user --user-name emp_026` to verify AWS access removal, \n`Get-ADUser -Identity emp_026` to verify Active Directory access removal, and \n`okta user lifecycle get --uid emp_026` to verify Okta access removal. These commands should be executed promptly to minimize the security risk associated with the orphaned account.",
         "affected_users": [
             {
                 "emp_id": "emp_026",
-                "hybrid_risk_score": 70.78,
-                "ml_risk_score": 45.78,
+                "hybrid_risk_score": 69.44,
+                "ml_risk_score": 44.44,
                 "features": {
                     "access_frequency": 3,
                     "platform_spread": 1,
@@ -24,217 +24,10 @@
     },
     {
         "incident_id": "INC-102",
-        "title": "Excessive Cross-Platform Privilege (NIST AC-6)",
-        "severity": "CRITICAL",
-        "affected_identities_count": 14,
-        "llm_executive_summary": "The incident cluster 'Excessive Cross-Platform Privilege (NIST AC-6)' affects five employees, with emp_id's emp_042, emp_077, emp_052, emp_053, and emp_069. The blast radius of this incident is significant, with all affected employees having a high hybrid risk score (ranging from 90.94 to 100.0) and a moderate to high machine learning risk score (70.94). The primary risk is related to excessive cross-platform privileges, which may lead to unauthorized data access and potential breaches. The framework violations include NIST AC-6 (related to least privilege) and GDPR Art 5 (related to data protection), as well as MITRE T1098 (related to spearphishing for credentials), indicating a potential for credential misuse.\n\nCorrelating the telemetry and graph privileges of the affected employees reveals a concerning pattern. All employees have an access frequency of 2, platform spread of 2, and a privilege-to-usage ratio of 1.0, indicating that they have a high level of access to multiple platforms, but may not be using these privileges frequently. Additionally, all employees have a total of 2 privileges, which may be excessive for their roles. This correlation suggests that the affected employees may have been granted excessive privileges, potentially due to over-provisioning or a lack of regular access reviews. This excessive access increases the risk of unauthorized data access and potential breaches, and highlights the need for immediate remediation to mitigate this risk.\n\nTo immediately revoke access for the specific platforms involved, the following CLI/PowerShell commands can be executed: `aws iam revoke-access --emp-id emp_042 --reason \"Excessive Cross-Platform Privilege\"` (for AWS access), `Remove-ADGroupMember -Identity \"Domain Admins\" -Members emp_042` (for Active Directory access), and `okta group remove-user --group-id 123456 --user-id emp_042` (for Okta access). These commands should be repeated for each affected employee (emp_077, emp_052, emp_053, and emp_069). Additionally, the following commands can be used to remove excessive privileges: `aws iam detach-policy --policy-arn arn:aws:iam::123456:policy/AdminAccess --user-name emp_042`, `Remove-ADPermission -Identity \"Domain Admins\" -User emp_042`, and `okta user remove-roles --user-id emp_042 --role-id 123456`. These commands will help to mitigate the risk associated with excessive cross-platform privileges and ensure compliance with NIST AC-6 and GDPR Art 5.",
-        "affected_users": [
-            {
-                "emp_id": "emp_042",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 70.94,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5",
-                    "MITRE T1098"
-                ]
-            },
-            {
-                "emp_id": "emp_077",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 70.94,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5",
-                    "MITRE T1098"
-                ]
-            },
-            {
-                "emp_id": "emp_052",
-                "hybrid_risk_score": 90.94,
-                "ml_risk_score": 70.94,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_053",
-                "hybrid_risk_score": 90.94,
-                "ml_risk_score": 70.94,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_069",
-                "hybrid_risk_score": 90.94,
-                "ml_risk_score": 70.94,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_080",
-                "hybrid_risk_score": 90.94,
-                "ml_risk_score": 70.94,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_082",
-                "hybrid_risk_score": 90.94,
-                "ml_risk_score": 70.94,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_040",
-                "hybrid_risk_score": 90.14,
-                "ml_risk_score": 70.14,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_045",
-                "hybrid_risk_score": 90.14,
-                "ml_risk_score": 70.14,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_054",
-                "hybrid_risk_score": 90.14,
-                "ml_risk_score": 70.14,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_075",
-                "hybrid_risk_score": 90.14,
-                "ml_risk_score": 70.14,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_094",
-                "hybrid_risk_score": 90.14,
-                "ml_risk_score": 70.14,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_099",
-                "hybrid_risk_score": 90.14,
-                "ml_risk_score": 70.14,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_100",
-                "hybrid_risk_score": 90.14,
-                "ml_risk_score": 70.14,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            }
-        ]
-    },
-    {
-        "incident_id": "INC-103",
         "title": "Credential Abuse & Token Misuse (MITRE T1078/T1550)",
         "severity": "CRITICAL",
         "affected_identities_count": 6,
-        "llm_executive_summary": "The incident cluster 'Credential Abuse & Token Misuse (MITRE T1078/T1550)' has been identified, affecting five employees with high-risk scores. The blast radius of this incident is significant, with all affected users having a hybrid risk score ranging from 66.38 to 100.0, indicating a high likelihood of credential abuse and token misuse. The majority of the affected users have a high access frequency, with some users accessing the system 8 times, and a moderate to high platform spread, with some users accessing up to 3 platforms. The risk summary indicates that immediate action is required to mitigate potential damage and prevent further unauthorized access.\n\nCorrelating the telemetry data with graph privileges, it is evident that some users have a high privilege-to-usage ratio, indicating that they have more privileges than they need for their current role. For example, employee \"emp_060\" has a privilege-to-usage ratio of 0.25, with 2 total privileges, and employee \"emp_058\" has a privilege-to-usage ratio of 0.4, also with 2 total privileges. This correlation suggests that these users may be over-privileged, increasing the risk of credential abuse and token misuse. Furthermore, the framework violations listed for each user, including MITRE T1078, MITRE T1550, and MITRE T1098, indicate that these users have been identified as potentially engaging in credential abuse and token misuse activities. It is essential to review and adjust the privileges for these users to ensure they have only the necessary access to perform their job functions.\n\nTo immediately revoke access for the specific platforms involved, the following CLI/PowerShell commands can be used. For AWS, run the command `aws iam revoke-access --user-name <emp_id> --aws-service-name <service_name>` to revoke access for each affected user. For Active Directory (AD), use the command `Revoke-ScheduledTask -TaskName <task_name> -User <emp_id>` to revoke access. For Okta, use the API command `curl -X POST https://<okta_domain>/api/v1/users/<emp_id>/lifecycle/deactivate` to deactivate the user account. Example commands include: `aws iam revoke-access --user-name emp_060 --aws-service-name EC2`, `Revoke-ScheduledTask -TaskName \"Daily Report\" -User emp_276`, and `curl -X POST https://example.okta.com/api/v1/users/emp_008/lifecycle/deactivate`. These commands should be executed immediately to prevent further unauthorized access and mitigate the risk of credential abuse and token misuse.",
+        "llm_executive_summary": "The incident cluster 'Credential Abuse & Token Misuse (MITRE T1078/T1550)' has affected five employees, with a blast radius that encompasses potential unauthorized access to sensitive resources. The risk summary indicates that all affected employees have a high hybrid risk score, with four out of five employees having a risk score of 83 or above. The machine learning risk score also indicates a high likelihood of malicious activity, with three out of five employees having a score above 70. The framework violations associated with these employees, including MITRE T1078 and T1550, suggest a potential abuse of credentials and misuse of tokens, which could lead to further lateral movement and exploitation of sensitive data.\n\nUpon analyzing the telemetry data, it is evident that there is a correlation between the access frequency, platform spread, and privilege usage among the affected employees. Employees with higher access frequencies and platform spreads tend to have higher risk scores, indicating a potential misuse of privileges. The privilege-to-usage ratio also suggests that some employees may have excessive privileges that are not being utilized, which could be exploited by attackers. Furthermore, the total privileges assigned to each employee vary, with some having no assigned privileges, while others have two or more. This disparity in privilege assignment highlights the need for a thorough review of access controls and privilege management to prevent further abuse. Additionally, graph privileges may be involved, as the platform spread and access frequency suggest potential movement across multiple systems and platforms.\n\nTo immediately revoke access for the affected employees, the following CLI/PowerShell commands can be executed: `aws iam revoke-access --user-name emp_060 --access-key-id <access_key_id>` for AWS access, `Remove-ADGroupMember -Identity \"Domain Admins\" -Members \"emp_276\"` for Active Directory access, and `okta user deactivate --uid <user_id> --provider okta` for Okta access. Please replace `<access_key_id>`, `<user_id>`, and other placeholders with the actual values for each affected employee. For example, to revoke AWS access for emp_060, use `aws iam revoke-access --user-name emp_060 --access-key-id AKIAIOSFODNN7EXAMPLE`. For Active Directory, use `Remove-ADGroupMember -Identity \"Domain Admins\" -Members \"CN=emp_276,OU=Employees,DC=example,DC=com\"`. For Okta, use `okta user deactivate --uid emp_276 --provider okta`. These commands will help to immediately mitigate the risk and prevent further unauthorized access.",
         "affected_users": [
             {
                 "emp_id": "emp_060",
@@ -253,7 +46,7 @@
             {
                 "emp_id": "emp_276",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 73.84,
+                "ml_risk_score": 70.89,
                 "features": {
                     "access_frequency": 8,
                     "platform_spread": 3,
@@ -266,9 +59,23 @@
                 ]
             },
             {
+                "emp_id": "emp_058",
+                "hybrid_risk_score": 83.49,
+                "ml_risk_score": 53.49,
+                "features": {
+                    "access_frequency": 5,
+                    "platform_spread": 2,
+                    "privilege_to_usage_ratio": 0.4,
+                    "total_privileges": 2
+                },
+                "framework_violations": [
+                    "MITRE T1078 / MITRE T1550"
+                ]
+            },
+            {
                 "emp_id": "emp_008",
-                "hybrid_risk_score": 83.19,
-                "ml_risk_score": 13.19,
+                "hybrid_risk_score": 83.05,
+                "ml_risk_score": 13.05,
                 "features": {
                     "access_frequency": 5,
                     "platform_spread": 2,
@@ -281,23 +88,9 @@
                 ]
             },
             {
-                "emp_id": "emp_058",
-                "hybrid_risk_score": 78.68,
-                "ml_risk_score": 48.68,
-                "features": {
-                    "access_frequency": 5,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 0.4,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "MITRE T1078 / MITRE T1550"
-                ]
-            },
-            {
                 "emp_id": "emp_180",
-                "hybrid_risk_score": 66.38,
-                "ml_risk_score": 36.38,
+                "hybrid_risk_score": 65.02,
+                "ml_risk_score": 35.02,
                 "features": {
                     "access_frequency": 3,
                     "platform_spread": 3,
@@ -310,8 +103,8 @@
             },
             {
                 "emp_id": "emp_204",
-                "hybrid_risk_score": 66.38,
-                "ml_risk_score": 36.38,
+                "hybrid_risk_score": 65.02,
+                "ml_risk_score": 35.02,
                 "features": {
                     "access_frequency": 3,
                     "platform_spread": 3,
@@ -325,16 +118,16 @@
         ]
     },
     {
-        "incident_id": "INC-104",
+        "incident_id": "INC-103",
         "title": "Privilege Escalation Activity (MITRE T1098)",
         "severity": "CRITICAL",
         "affected_identities_count": 11,
-        "llm_executive_summary": "The Privilege Escalation Activity (MITRE T1098) incident cluster has identified five high-risk users with elevated privilege access, posing a significant threat to our organization's security posture. The blast radius of this incident is substantial, with all affected users exhibiting a hybrid risk score of 100.0, indicating a high likelihood of malicious activity. The machine learning risk scores range from 61.02 to 73.84, further reinforcing the need for immediate action. The affected users have a high access frequency, with some accessing multiple platforms, which increases the potential for lateral movement and exploitation.\n\nUpon closer examination of the telemetry data, it becomes evident that the affected users have a high platform spread, with some users accessing up to three different platforms. Notably, users emp_063 and emp_073 have a non-zero total privilege count, with a privilege-to-usage ratio of 0.333, suggesting that they may be abusing their existing privileges. In contrast, users emp_109, emp_151, and emp_256 have a total privilege count of zero, which could indicate that they are attempting to escalate their privileges. Graph privileges analysis reveals that these users may be leveraging their access to sensitive data and systems, potentially creating a backdoor for further exploitation. The correlation of their telemetry data and graph privileges highlights the urgency of revoking their access to prevent further damage.\n\nTo immediately mitigate the risk, we recommend revoking access for the affected users on all platforms. The following CLI/PowerShell commands can be used to revoke access: \n`aws iam remove-user-from-group --user-name emp_063 --group-name Admins` \n`aws iam remove-user-from-group --user-name emp_073 --group-name Admins` \n`aws iam remove-user-from-group --user-name emp_109 --group-name Users` \n`aws iam remove-user-from-group --user-name emp_151 --group-name Users` \n`aws iam remove-user-from-group --user-name emp_256 --group-name Users` \nFor Active Directory: \n`Remove-ADGroupMember -Identity Admins -Members emp_063, emp_073` \n`Remove-ADGroupMember -Identity Users -Members emp_109, emp_151, emp_256` \nFor Okta: \n`okta group remove-user --group-name Admins --user-name emp_063` \n`okta group remove-user --group-name Admins --user-name emp_073` \n`okta group remove-user --group-name Users --user-name emp_109` \n`okta group remove-user --group-name Users --user-name emp_151` \n`okta group remove-user --group-name Users --user-name emp_256`. These commands will revoke the affected users' access to sensitive groups and platforms, preventing further privilege escalation and potential lateral movement.",
+        "llm_executive_summary": "The privilege escalation activity identified, associated with MITRE T1098, involves a cluster of five employees, each exhibiting high-risk behavior indicative of potential security threats. The blast radius of this incident appears to be contained within these five individuals, with \"emp_063\", \"emp_073\", \"emp_151\", \"emp_256\", and \"emp_109\" being the affected users. All of these users have a hybrid risk score of 100.0 or very close to it, signifying a high level of risk. The machine learning (ML) risk scores also indicate a significant risk, ranging from 59.04 to 70.89. This suggests that these users have been engaging in behavior that could potentially lead to privilege escalation, posing a considerable threat to the organization's security.\n\nUpon examining the telemetry and graph privileges of the affected users, it is notable that \"emp_063\" and \"emp_073\" have identical feature profiles, including an access frequency of 6, a platform spread of 3, a privilege to usage ratio of 0.333, and a total of 2 privileges. In contrast, \"emp_151\", \"emp_256\", and \"emp_109\" have different profiles, with \"emp_151\" and \"emp_256\" having no privileges but higher access frequencies and platform spreads. These correlations suggest that the attackers might be exploring different tactics to escalate privileges, possibly exploiting weaknesses in the organization's access control and privilege management systems. Understanding these patterns is crucial for developing an effective response strategy to mitigate the threat and prevent future incidents.\n\nTo immediately address the security risk posed by these users, it is essential to revoke their access to sensitive platforms. The following CLI/PowerShell commands can be executed to revoke access: \n- For AWS: `aws iam remove-user-from-group --user-name emp_063 --group-name Admins` (repeat for each affected user); \n- For Active Directory (AD): `Remove-ADGroupMember -Identity Admins -Members emp_063` (repeat for each affected user); \n- For Okta: `okta user group remove --user emp_063 --group Admins` (repeat for each affected user). \nReplace `Admins` with the actual group name and `emp_063` with each of the affected users' IDs. These commands will remove the affected users from sensitive groups, thereby mitigating the immediate risk of privilege escalation. It is also recommended to conduct a thorough review of the organization's access controls, privilege management, and monitoring to identify and address any underlying vulnerabilities that may have contributed to this incident.",
         "affected_users": [
             {
                 "emp_id": "emp_063",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 70.33,
+                "ml_risk_score": 68.88,
                 "features": {
                     "access_frequency": 6,
                     "platform_spread": 3,
@@ -348,7 +141,7 @@
             {
                 "emp_id": "emp_073",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 70.33,
+                "ml_risk_score": 68.88,
                 "features": {
                     "access_frequency": 6,
                     "platform_spread": 3,
@@ -360,23 +153,9 @@
                 ]
             },
             {
-                "emp_id": "emp_109",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 61.02,
-                "features": {
-                    "access_frequency": 7,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.0,
-                    "total_privileges": 0
-                },
-                "framework_violations": [
-                    "MITRE T1098"
-                ]
-            },
-            {
                 "emp_id": "emp_151",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 69.7,
+                "ml_risk_score": 68.62,
                 "features": {
                     "access_frequency": 4,
                     "platform_spread": 1,
@@ -390,7 +169,7 @@
             {
                 "emp_id": "emp_256",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 73.84,
+                "ml_risk_score": 70.89,
                 "features": {
                     "access_frequency": 8,
                     "platform_spread": 3,
@@ -402,9 +181,23 @@
                 ]
             },
             {
+                "emp_id": "emp_109",
+                "hybrid_risk_score": 99.04,
+                "ml_risk_score": 59.04,
+                "features": {
+                    "access_frequency": 7,
+                    "platform_spread": 3,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "MITRE T1098"
+                ]
+            },
+            {
                 "emp_id": "emp_055",
-                "hybrid_risk_score": 98.2,
-                "ml_risk_score": 58.2,
+                "hybrid_risk_score": 97.59,
+                "ml_risk_score": 57.59,
                 "features": {
                     "access_frequency": 5,
                     "platform_spread": 3,
@@ -417,8 +210,8 @@
             },
             {
                 "emp_id": "emp_086",
-                "hybrid_risk_score": 88.68,
-                "ml_risk_score": 48.68,
+                "hybrid_risk_score": 93.49,
+                "ml_risk_score": 53.49,
                 "features": {
                     "access_frequency": 5,
                     "platform_spread": 2,
@@ -431,8 +224,8 @@
             },
             {
                 "emp_id": "emp_076",
-                "hybrid_risk_score": 82.43,
-                "ml_risk_score": 42.43,
+                "hybrid_risk_score": 87.23,
+                "ml_risk_score": 47.23,
                 "features": {
                     "access_frequency": 4,
                     "platform_spread": 2,
@@ -445,8 +238,8 @@
             },
             {
                 "emp_id": "emp_079",
-                "hybrid_risk_score": 82.43,
-                "ml_risk_score": 42.43,
+                "hybrid_risk_score": 87.23,
+                "ml_risk_score": 47.23,
                 "features": {
                     "access_frequency": 4,
                     "platform_spread": 2,
@@ -459,8 +252,8 @@
             },
             {
                 "emp_id": "emp_087",
-                "hybrid_risk_score": 82.43,
-                "ml_risk_score": 42.43,
+                "hybrid_risk_score": 87.23,
+                "ml_risk_score": 47.23,
                 "features": {
                     "access_frequency": 4,
                     "platform_spread": 2,
@@ -473,8 +266,8 @@
             },
             {
                 "emp_id": "emp_084",
-                "hybrid_risk_score": 76.46,
-                "ml_risk_score": 36.46,
+                "hybrid_risk_score": 84.07,
+                "ml_risk_score": 44.07,
                 "features": {
                     "access_frequency": 3,
                     "platform_spread": 2,
@@ -488,40 +281,16 @@
         ]
     },
     {
-        "incident_id": "INC-105",
+        "incident_id": "INC-104",
         "title": "Anomalous Behavioral Activity (ML-Detected)",
         "severity": "CRITICAL",
         "affected_identities_count": 8,
-        "llm_executive_summary": "The incident cluster 'Anomalous Behavioral Activity (ML-Detected)' has identified five affected users with elevated risk scores, indicating potential security threats. The blast radius appears to be moderate, with the highest risk score being 91.09 for employee 'emp_065', followed by 'emp_057' with a score of 88.16. The remaining three employees, 'emp_070', 'emp_074', and 'emp_286', have risk scores of 84.69, 84.69, and 80.79, respectively. The fact that all users have similar risk scores, with the exception of 'emp_286' who has a slightly lower score but an unusual privilege-to-usage ratio of 0.0, suggests that the anomalous behavior may be related to a specific group or pattern of activity.\n\nFurther analysis of the users' telemetry data reveals that their access frequencies, platform spreads, and privilege-to-usage ratios are correlated, suggesting that they may be accessing similar resources or platforms. The 'platform_spread' feature, which indicates the number of different platforms accessed, is relatively low for all users, with only 'emp_065' accessing two platforms. The 'privilege_to_usage_ratio' feature also shows that most users have a non-zero ratio, indicating that they have privileges that are being used. However, 'emp_286' has a ratio of 0.0, which may indicate that they have privileges that are not being used or are over-privileged. The 'total_privileges' feature shows that most users have two privileges, which could be related to their job functions or roles. Further investigation is needed to determine the specific privileges and platforms involved.\n\nTo immediately revoke access for the specific platforms involved, the following CLI/PowerShell commands can be executed: `aws iam remove-user-from-group --user-name emp_065 --group-name <group_name>` and `aws iam remove-user-from-group --user-name emp_057 --group-name <group_name>` for AWS access. For Active Directory, the following PowerShell commands can be used: `Remove-ADGroupMember -Identity <group_name> -Members emp_065` and `Remove-ADGroupMember -Identity <group_name> -Members emp_057`. For Okta, the following CLI commands can be used: `okta group remove-user --group <group_name> --user emp_065` and `okta group remove-user --group <group_name> --user emp_057`. Replace `<group_name>` with the actual name of the group or role that the users are being removed from. Additionally, to revoke access for 'emp_070', 'emp_074', and 'emp_286', the same commands can be used, replacing the user names accordingly. It is essential to verify the group names and user identities before executing these commands to ensure accurate revocation of access.",
+        "llm_executive_summary": "The incident cluster 'Anomalous Behavioral Activity (ML-Detected)' has identified five users with elevated risk scores, indicating potential security threats. The blast radius of this incident appears to be moderate, with the affected users having a hybrid risk score range of 75.05 to 93.2. The top three users, emp_070, emp_074, and emp_057, have risk scores above 92, suggesting a higher likelihood of malicious activity. The remaining two users, emp_065 and emp_286, have slightly lower risk scores, but still warrant attention due to their anomalous behavior. Overall, the risk summary suggests that these users require immediate attention to prevent potential security breaches.\n\nCorrelating the telemetry data of the affected users reveals some interesting patterns. The top three users have a consistent profile, with an access frequency of 3-4, a platform spread of 1, and a privilege-to-usage ratio of 0.5-0.667. This suggests that these users have been accessing a single platform with moderate frequency and have been utilizing a significant portion of their assigned privileges. In contrast, user emp_065 has a higher access frequency of 7 and a platform spread of 2, indicating potential lateral movement. User emp_286 has a privilege-to-usage ratio of 0.0, suggesting that they may have been assigned privileges that are not being utilized. Graphing these users' privileges and activity patterns reveals a complex network of potential security vulnerabilities. Further analysis is required to fully understand the scope of this incident and to identify potential mitigation strategies.\n\nTo immediately revoke access for the specific platforms involved, the following CLI/PowerShell commands can be executed: `aws iam remove-user-from-group --user-name emp_070 --group-name Admins`, `aws iam remove-user-from-group --user-name emp_074 --group-name Admins`, `aws iam remove-user-from-group --user-name emp_057 --group-name Admins`, `aws iam remove-user-from-group --user-name emp_065 --group-name Admins`, and `aws iam remove-user-from-group --user-name emp_286 --group-name Admins`. For Active Directory, the following commands can be executed: `Remove-ADGroupMember -Identity \"Admins\" -Members \"emp_070\"`, `Remove-ADGroupMember -Identity \"Admins\" -Members \"emp_074\"`, `Remove-ADGroupMember -Identity \"Admins\" -Members \"emp_057\"`, `Remove-ADGroupMember -Identity \"Admins\" -Members \"emp_065\"`, and `Remove-ADGroupMember -Identity \"Admins\" -Members \"emp_286\"`. For Okta, the following API call can be made: `curl -X POST \\\n  https://your-okta-domain.okta.com/api/v1/users/emp_070/lifecycle/deactivate` (replace `emp_070` with each affected user and `your-okta-domain` with your actual Okta domain). These commands will revoke access for the affected users and prevent further potential security breaches.",
         "affected_users": [
             {
-                "emp_id": "emp_065",
-                "hybrid_risk_score": 91.09,
-                "ml_risk_score": 91.09,
-                "features": {
-                    "access_frequency": 7,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 0.286,
-                    "total_privileges": 2
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_057",
-                "hybrid_risk_score": 88.16,
-                "ml_risk_score": 88.16,
-                "features": {
-                    "access_frequency": 4,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 0.5,
-                    "total_privileges": 2
-                },
-                "framework_violations": []
-            },
-            {
                 "emp_id": "emp_070",
-                "hybrid_risk_score": 84.69,
-                "ml_risk_score": 84.69,
+                "hybrid_risk_score": 93.2,
+                "ml_risk_score": 93.2,
                 "features": {
                     "access_frequency": 3,
                     "platform_spread": 1,
@@ -532,8 +301,8 @@
             },
             {
                 "emp_id": "emp_074",
-                "hybrid_risk_score": 84.69,
-                "ml_risk_score": 84.69,
+                "hybrid_risk_score": 93.2,
+                "ml_risk_score": 93.2,
                 "features": {
                     "access_frequency": 3,
                     "platform_spread": 1,
@@ -543,9 +312,33 @@
                 "framework_violations": []
             },
             {
+                "emp_id": "emp_057",
+                "hybrid_risk_score": 92.38,
+                "ml_risk_score": 92.38,
+                "features": {
+                    "access_frequency": 4,
+                    "platform_spread": 1,
+                    "privilege_to_usage_ratio": 0.5,
+                    "total_privileges": 2
+                },
+                "framework_violations": []
+            },
+            {
+                "emp_id": "emp_065",
+                "hybrid_risk_score": 89.84,
+                "ml_risk_score": 89.84,
+                "features": {
+                    "access_frequency": 7,
+                    "platform_spread": 2,
+                    "privilege_to_usage_ratio": 0.286,
+                    "total_privileges": 2
+                },
+                "framework_violations": []
+            },
+            {
                 "emp_id": "emp_286",
-                "hybrid_risk_score": 80.79,
-                "ml_risk_score": 80.79,
+                "hybrid_risk_score": 75.05,
+                "ml_risk_score": 75.05,
                 "features": {
                     "access_frequency": 5,
                     "platform_spread": 1,
@@ -555,21 +348,9 @@
                 "framework_violations": []
             },
             {
-                "emp_id": "emp_116",
-                "hybrid_risk_score": 73.84,
-                "ml_risk_score": 73.84,
-                "features": {
-                    "access_frequency": 8,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.0,
-                    "total_privileges": 0
-                },
-                "framework_violations": []
-            },
-            {
                 "emp_id": "emp_104",
-                "hybrid_risk_score": 71.77,
-                "ml_risk_score": 71.77,
+                "hybrid_risk_score": 74.81,
+                "ml_risk_score": 74.81,
                 "features": {
                     "access_frequency": 4,
                     "platform_spread": 3,
@@ -579,9 +360,21 @@
                 "framework_violations": []
             },
             {
+                "emp_id": "emp_116",
+                "hybrid_risk_score": 70.89,
+                "ml_risk_score": 70.89,
+                "features": {
+                    "access_frequency": 8,
+                    "platform_spread": 3,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": []
+            },
+            {
                 "emp_id": "emp_061",
-                "hybrid_risk_score": 70.33,
-                "ml_risk_score": 70.33,
+                "hybrid_risk_score": 68.88,
+                "ml_risk_score": 68.88,
                 "features": {
                     "access_frequency": 6,
                     "platform_spread": 3,
