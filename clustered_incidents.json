@@ -1,15 +1,220 @@
 [
     {
         "incident_id": "INC-101",
-        "title": "Excessive Cross-Platform Privilege (NIST AC-6)",
-        "severity": "CRITICAL",
-        "affected_identities_count": 16,
-        "llm_executive_summary": "Generic Placeholder: LLM Generation failed (429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 42.614069486s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '42s'}]}})",
+        "title": "Orphaned Account & Lifecycle Gaps (NIST AC-2)",
+        "severity": "HIGH",
+        "affected_identities_count": 14,
+        "llm_executive_summary": "The incident cluster 'Orphaned Account & Lifecycle Gaps (NIST AC-2)' poses a significant risk to our organization's security posture. The blast radius of this incident encompasses five employee accounts (emp_001, emp_002, emp_003, emp_005, and emp_006) that have been identified as orphaned, with a hybrid risk score of 66.32 and an ML risk score of 41.32. These accounts have not been accessed recently, as evidenced by their access frequency of 0, and have a privilege to usage ratio of 0.0, indicating potential over-privileging. The risk summary suggests that these accounts are vulnerable to exploitation, potentially leading to unauthorized access to sensitive resources and data.\n\nCorrelating the telemetry data of these accounts reveals a consistent pattern of inactivity, with all accounts exhibiting zero access frequency, platform spread, and total privileges. The features extracted from these accounts, including access frequency, platform spread, and privilege to usage ratio, suggest a lack of usage and potential abandonment. Furthermore, the graph privileges of these accounts are not explicitly defined, implying a potential gap in our identity and access management (IAM) lifecycle processes. The framework violations listed, including NIST AC-2 and CIS 5, highlight the need for immediate attention to rectify these gaps and prevent potential security breaches. A thorough review of our IAM processes and controls is necessary to ensure that all accounts, especially those with elevated privileges, are properly managed and monitored.\n\nTo immediately revoke access for the specific platforms involved, including AWS, AD, and Okta, the following CLI/PowerShell commands can be executed: \n`aws iam delete-user --user-name emp_001` (repeat for each emp_id), \n`Remove-ADGroupMember -Identity \"Domain Admins\" -Members emp_001` (repeat for each emp_id), and \n`okta user lifecycle revoke-access --uid emp_001` (repeat for each emp_id). \nAdditionally, to remove any existing session tokens, run: \n`aws iam remove-login-profile --user-name emp_001` (repeat for each emp_id), \n`Revoke-AzureADUserAllRefreshToken -ObjectId (Get-AzureADUser -Filter \"UserPrincipalName eq 'emp_001'\").ObjectId` (repeat for each emp_id), and \n`okta session delete --uid emp_001` (repeat for each emp_id). \nThese commands should be executed promptly to minimize the risk associated with these orphaned accounts. It is essential to note that these commands are just a starting point, and a comprehensive review of our IAM processes and controls is necessary to prevent similar incidents in the future.",
         "affected_users": [
             {
-                "emp_id": "emp_040",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
+                "emp_id": "emp_001",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_002",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_003",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_005",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_006",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_007",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_010",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_014",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_016",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_018",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_022",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_023",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_025",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_029",
+                "hybrid_risk_score": 66.32,
+                "ml_risk_score": 41.32,
+                "features": {
+                    "access_frequency": 0,
+                    "platform_spread": 0,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "NIST AC-2 / CIS 5"
+                ]
+            }
+        ]
+    },
+    {
+        "incident_id": "INC-102",
+        "title": "Excessive Cross-Platform Privilege (NIST AC-6)",
+        "severity": "CRITICAL",
+        "affected_identities_count": 8,
+        "llm_executive_summary": "The incident cluster 'Excessive Cross-Platform Privilege (NIST AC-6)' has identified five high-risk users with elevated privileges across multiple platforms. The affected users, emp_043, emp_044, emp_050, emp_059, and emp_071, have a hybrid risk score of 99.95 and an ml risk score of 79.95, indicating a high likelihood of potential security breaches. The blast radius of this incident is significant, as all five users have a high privilege-to-usage ratio of 2.0 and a total of two privileges each, which could lead to unauthorized access to sensitive data and systems. The framework violations, including NIST AC-6 and GDPR Art 5, further emphasize the need for immediate attention to mitigate potential risks.\n\nUpon analyzing the telemetry data, it is evident that the affected users have a low access frequency of 1 and a platform spread of 1, indicating that they may not be actively using their privileges. However, the correlation between their telemetry and graph privileges suggests that they have been granted excessive privileges, which could be exploited by malicious actors. The fact that all five users have identical feature profiles, including access frequency, platform spread, privilege-to-usage ratio, and total privileges, suggests a potential misconfiguration or oversight in the privilege assignment process. It is essential to investigate the root cause of this issue and implement corrective measures to prevent similar incidents in the future.\n\nTo immediately revoke access for the specific platforms involved, the following CLI/PowerShell commands can be executed: `aws iam revoke-user-access --user-name emp_043 --platform AWS`; `Set-ADGroup -Identity \"Domain Admins\" -RemoveMembers emp_044`; `okta user lifecycle unsubscribe --uid emp_050`; `aws iam revoke-user-access --user-name emp_059 --platform AWS`; `Set-ADGroup -Identity \"Domain Admins\" -RemoveMembers emp_071`. Additionally, to revoke Okta access, run `okta user lifecycle unsubscribe --uid emp_043` and `okta user lifecycle unsubscribe --uid emp_044`. For AD, run `Set-ADGroup -Identity \"Domain Admins\" -RemoveMembers emp_050` and `Set-ADGroup -Identity \"Domain Admins\" -RemoveMembers emp_059`. These commands will revoke access to AWS, Active Directory, and Okta for the affected users, mitigating the immediate risk associated with excessive cross-platform privileges.",
+        "affected_users": [
+            {
+                "emp_id": "emp_043",
+                "hybrid_risk_score": 99.95,
+                "ml_risk_score": 79.95,
                 "features": {
                     "access_frequency": 1,
                     "platform_spread": 1,
@@ -22,8 +227,8 @@
             },
             {
                 "emp_id": "emp_044",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
+                "hybrid_risk_score": 99.95,
+                "ml_risk_score": 79.95,
                 "features": {
                     "access_frequency": 1,
                     "platform_spread": 1,
@@ -35,9 +240,9 @@
                 ]
             },
             {
-                "emp_id": "emp_055",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
+                "emp_id": "emp_050",
+                "hybrid_risk_score": 99.95,
+                "ml_risk_score": 79.95,
                 "features": {
                     "access_frequency": 1,
                     "platform_spread": 1,
@@ -49,23 +254,9 @@
                 ]
             },
             {
-                "emp_id": "emp_056",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 89.38,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_064",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
+                "emp_id": "emp_059",
+                "hybrid_risk_score": 99.95,
+                "ml_risk_score": 79.95,
                 "features": {
                     "access_frequency": 1,
                     "platform_spread": 1,
@@ -77,23 +268,9 @@
                 ]
             },
             {
-                "emp_id": "emp_065",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 89.38,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_067",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
+                "emp_id": "emp_071",
+                "hybrid_risk_score": 99.95,
+                "ml_risk_score": 79.95,
                 "features": {
                     "access_frequency": 1,
                     "platform_spread": 1,
@@ -105,9 +282,9 @@
                 ]
             },
             {
-                "emp_id": "emp_072",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
+                "emp_id": "emp_088",
+                "hybrid_risk_score": 99.95,
+                "ml_risk_score": 79.95,
                 "features": {
                     "access_frequency": 1,
                     "platform_spread": 1,
@@ -119,9 +296,9 @@
                 ]
             },
             {
-                "emp_id": "emp_076",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
+                "emp_id": "emp_090",
+                "hybrid_risk_score": 99.95,
+                "ml_risk_score": 79.95,
                 "features": {
                     "access_frequency": 1,
                     "platform_spread": 1,
@@ -133,93 +310,9 @@
                 ]
             },
             {
-                "emp_id": "emp_081",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 89.38,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_089",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
-                "features": {
-                    "access_frequency": 1,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 2.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_094",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 89.38,
-                "features": {
-                    "access_frequency": 2,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 1.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_098",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
-                "features": {
-                    "access_frequency": 1,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 2.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_100",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
-                "features": {
-                    "access_frequency": 1,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 2.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_102",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
-                "features": {
-                    "access_frequency": 1,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 2.0,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "NIST AC-6 / GDPR Art 5"
-                ]
-            },
-            {
-                "emp_id": "emp_103",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 81.56,
+                "emp_id": "emp_093",
+                "hybrid_risk_score": 99.95,
+                "ml_risk_score": 79.95,
                 "features": {
                     "access_frequency": 1,
                     "platform_spread": 1,
@@ -233,20 +326,20 @@
         ]
     },
     {
-        "incident_id": "INC-102",
+        "incident_id": "INC-103",
         "title": "Credential Abuse & Token Misuse (MITRE T1078/T1550)",
         "severity": "CRITICAL",
-        "affected_identities_count": 5,
-        "llm_executive_summary": "Generic Placeholder: LLM Generation failed (429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 34.983516663s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '34s'}]}})",
+        "affected_identities_count": 4,
+        "llm_executive_summary": "The current incident cluster, 'Credential Abuse & Token Misuse (MITRE T1078/T1550)', involves four affected users, emp_060, emp_058, emp_180, and emp_204, with varying levels of risk. The hybrid risk scores for these users range from 65.21 to 100.0, and the machine learning risk scores range from 35.21 to 100.0. The user with the highest risk score is emp_060, with both hybrid and machine learning risk scores of 100.0, indicating a high likelihood of malicious activity. The blast radius of this incident appears to be moderate, with multiple users and potential access to various platforms, emphasizing the need for immediate action to mitigate potential damage.\n\nUpon reviewing the telemetry data, it is evident that there is a correlation between the users' access frequency, platform spread, and privilege usage. For example, emp_060 has an access frequency of 8 and a platform spread of 3, indicating a high level of activity across multiple platforms. Additionally, the privilege to usage ratio for emp_060 is 0.25, suggesting that the user has more privileges than they are using, which could be an indication of credential abuse. The graph privileges for these users appear to be concentrated on a few key platforms, with emp_058 and emp_060 having a total of 2 privileges each. This correlation suggests that the attackers may be targeting specific platforms or resources, and that the incident response should focus on securing these areas. Further analysis of the telemetry data is necessary to understand the scope and extent of the incident.\n\nTo immediately revoke access for the affected users, the following CLI/PowerShell commands can be executed: `aws iam revoke-access --user-name emp_060 --access-key-id <access_key_id>` for AWS, `Remove-ADGroupMember -Identity <group_name> -Members emp_060` for Active Directory, and `okta user lifecycle revoke --user emp_060` for Okta. These commands should be executed for each of the affected users, replacing `<access_key_id>` and `<group_name>` with the actual values. Additionally, the following commands can be used to revoke specific privileges: `aws iam detach-user-policy --user-name emp_060 --policy-arn <policy_arn>` for AWS, `Remove-ADGroupMember -Identity <group_name> -Members emp_060` for Active Directory, and `okta group user remove --group <group_name> --user emp_060` for Okta. It is essential to replace `<policy_arn>` and `<group_name>` with the actual values to ensure the correct privileges are revoked. By executing these commands, access for the affected users can be immediately revoked, mitigating the potential damage from the incident.",
         "affected_users": [
             {
-                "emp_id": "emp_039",
+                "emp_id": "emp_060",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 90.54,
+                "ml_risk_score": 100.0,
                 "features": {
-                    "access_frequency": 3,
+                    "access_frequency": 8,
                     "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.667,
+                    "privilege_to_usage_ratio": 0.25,
                     "total_privileges": 2
                 },
                 "framework_violations": [
@@ -254,37 +347,9 @@
                 ]
             },
             {
-                "emp_id": "emp_104",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 73.16,
-                "features": {
-                    "access_frequency": 5,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.2,
-                    "total_privileges": 1
-                },
-                "framework_violations": [
-                    "MITRE T1078 / MITRE T1550"
-                ]
-            },
-            {
-                "emp_id": "emp_280",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 79.13,
-                "features": {
-                    "access_frequency": 7,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 0.0,
-                    "total_privileges": 0
-                },
-                "framework_violations": [
-                    "MITRE T1078 / MITRE T1550"
-                ]
-            },
-            {
-                "emp_id": "emp_048",
-                "hybrid_risk_score": 88.02,
-                "ml_risk_score": 58.02,
+                "emp_id": "emp_058",
+                "hybrid_risk_score": 77.31,
+                "ml_risk_score": 47.31,
                 "features": {
                     "access_frequency": 5,
                     "platform_spread": 2,
@@ -296,65 +361,80 @@
                 ]
             },
             {
-                "emp_id": "emp_146",
-                "hybrid_risk_score": 72.19,
-                "ml_risk_score": 2.19,
+                "emp_id": "emp_180",
+                "hybrid_risk_score": 65.21,
+                "ml_risk_score": 35.21,
                 "features": {
-                    "access_frequency": 4,
-                    "platform_spread": 2,
+                    "access_frequency": 3,
+                    "platform_spread": 3,
                     "privilege_to_usage_ratio": 0.0,
                     "total_privileges": 0
                 },
                 "framework_violations": [
-                    "MITRE T1078 / MITRE T1550",
-                    "MITRE T1098"
+                    "MITRE T1078 / MITRE T1550"
+                ]
+            },
+            {
+                "emp_id": "emp_204",
+                "hybrid_risk_score": 65.21,
+                "ml_risk_score": 35.21,
+                "features": {
+                    "access_frequency": 3,
+                    "platform_spread": 3,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "MITRE T1078 / MITRE T1550"
                 ]
             }
         ]
     },
     {
-        "incident_id": "INC-103",
+        "incident_id": "INC-104",
         "title": "Privilege Escalation Activity (MITRE T1098)",
         "severity": "CRITICAL",
-        "affected_identities_count": 13,
-        "llm_executive_summary": "Generic Placeholder: LLM Generation failed (429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 27.238076232s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '27s'}]}})",
+        "affected_identities_count": 16,
+        "llm_executive_summary": "The Privilege Escalation Activity (MITRE T1098) incident cluster has identified five affected users, all with a hybrid risk score of 100.0, indicating a high likelihood of malicious activity. The affected users are emp_008, emp_042, emp_063, emp_073, and emp_077, with corresponding machine learning risk scores ranging from 14.92 to 67.38. The framework violations associated with these users include MITRE T1098, as well as additional violations such as MITRE T1078 / MITRE T1550 and NIST AC-2 / CIS 5 for emp_008. The blast radius of this incident is currently limited to these five users, but immediate action is necessary to prevent further escalation and minimize potential damage.\n\nUpon reviewing the telemetry data, it is evident that the affected users have exhibited suspicious patterns of behavior, including high access frequencies and platform spread. For example, emp_063 and emp_073 have accessed six different platforms, while emp_042 and emp_077 have accessed two platforms with a high privilege-to-usage ratio. The graph privileges for these users indicate that they have been granted excessive permissions, which may have contributed to the privilege escalation activity. Correlating the telemetry data with the graph privileges reveals a potential vulnerability in the current access control configuration, which must be addressed to prevent similar incidents in the future. Further analysis of the features and framework violations will be necessary to determine the root cause of the incident and implement effective countermeasures.\n\nTo immediately revoke access for the affected users, the following CLI/PowerShell commands can be executed: `aws iam revoke-user-access --user-name emp_008 --platform AWS`, `Remove-ADGroupMember -Identity \"Domain Admins\" -Members emp_042`, `Okta API POST /api/v1/users/emp_063/lifecycle/deactivate`, `aws iam revoke-user-access --user-name emp_073 --platform AWS`, and `Remove-ADGroupMember -Identity \"Domain Admins\" -Members emp_077`. For Okta, also run `Okta API POST /api/v1/apps/{app_id}/users/emp_077/withdraw`. Note that {app_id} should be replaced with the actual application ID. These commands will revoke access to AWS, Active Directory, and Okta for the specified users, preventing further malicious activity. It is essential to verify the effectiveness of these commands and continue monitoring the affected users to ensure that the incident is fully contained and mitigated. Additionally, a thorough review of the access control configuration and privilege assignment process is necessary to prevent similar incidents in the future.",
         "affected_users": [
             {
-                "emp_id": "emp_037",
+                "emp_id": "emp_008",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 90.54,
+                "ml_risk_score": 14.92,
                 "features": {
-                    "access_frequency": 3,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.667,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "MITRE T1098"
-                ]
-            },
-            {
-                "emp_id": "emp_045",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 99.58,
-                "features": {
-                    "access_frequency": 8,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.25,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "MITRE T1098"
-                ]
-            },
-            {
-                "emp_id": "emp_071",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 72.68,
-                "features": {
-                    "access_frequency": 4,
+                    "access_frequency": 5,
                     "platform_spread": 2,
-                    "privilege_to_usage_ratio": 0.5,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "MITRE T1098",
+                    "MITRE T1078 / MITRE T1550",
+                    "NIST AC-2 / CIS 5"
+                ]
+            },
+            {
+                "emp_id": "emp_042",
+                "hybrid_risk_score": 100.0,
+                "ml_risk_score": 61.59,
+                "features": {
+                    "access_frequency": 2,
+                    "platform_spread": 2,
+                    "privilege_to_usage_ratio": 1.0,
+                    "total_privileges": 2
+                },
+                "framework_violations": [
+                    "MITRE T1098"
+                ]
+            },
+            {
+                "emp_id": "emp_063",
+                "hybrid_risk_score": 100.0,
+                "ml_risk_score": 67.38,
+                "features": {
+                    "access_frequency": 6,
+                    "platform_spread": 3,
+                    "privilege_to_usage_ratio": 0.333,
                     "total_privileges": 2
                 },
                 "framework_violations": [
@@ -364,11 +444,11 @@
             {
                 "emp_id": "emp_073",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 63.46,
+                "ml_risk_score": 67.38,
                 "features": {
-                    "access_frequency": 4,
+                    "access_frequency": 6,
                     "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.5,
+                    "privilege_to_usage_ratio": 0.333,
                     "total_privileges": 2
                 },
                 "framework_violations": [
@@ -376,9 +456,9 @@
                 ]
             },
             {
-                "emp_id": "emp_084",
+                "emp_id": "emp_077",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 61.21,
+                "ml_risk_score": 61.59,
                 "features": {
                     "access_frequency": 2,
                     "platform_spread": 2,
@@ -390,37 +470,9 @@
                 ]
             },
             {
-                "emp_id": "emp_092",
+                "emp_id": "emp_151",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 72.68,
-                "features": {
-                    "access_frequency": 4,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 0.5,
-                    "total_privileges": 2
-                },
-                "framework_violations": [
-                    "MITRE T1098"
-                ]
-            },
-            {
-                "emp_id": "emp_156",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 100.0,
-                "features": {
-                    "access_frequency": 10,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.0,
-                    "total_privileges": 0
-                },
-                "framework_violations": [
-                    "MITRE T1098"
-                ]
-            },
-            {
-                "emp_id": "emp_214",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 65.55,
+                "ml_risk_score": 60.64,
                 "features": {
                     "access_frequency": 4,
                     "platform_spread": 1,
@@ -432,11 +484,11 @@
                 ]
             },
             {
-                "emp_id": "emp_291",
+                "emp_id": "emp_256",
                 "hybrid_risk_score": 100.0,
-                "ml_risk_score": 79.6,
+                "ml_risk_score": 76.29,
                 "features": {
-                    "access_frequency": 9,
+                    "access_frequency": 8,
                     "platform_spread": 3,
                     "privilege_to_usage_ratio": 0.0,
                     "total_privileges": 0
@@ -446,9 +498,52 @@
                 ]
             },
             {
-                "emp_id": "emp_062",
-                "hybrid_risk_score": 98.02,
-                "ml_risk_score": 58.02,
+                "emp_id": "emp_276",
+                "hybrid_risk_score": 100.0,
+                "ml_risk_score": 76.29,
+                "features": {
+                    "access_frequency": 8,
+                    "platform_spread": 3,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "MITRE T1098",
+                    "MITRE T1078 / MITRE T1550"
+                ]
+            },
+            {
+                "emp_id": "emp_055",
+                "hybrid_risk_score": 99.63,
+                "ml_risk_score": 59.63,
+                "features": {
+                    "access_frequency": 5,
+                    "platform_spread": 3,
+                    "privilege_to_usage_ratio": 0.4,
+                    "total_privileges": 2
+                },
+                "framework_violations": [
+                    "MITRE T1098"
+                ]
+            },
+            {
+                "emp_id": "emp_109",
+                "hybrid_risk_score": 99.46,
+                "ml_risk_score": 59.46,
+                "features": {
+                    "access_frequency": 7,
+                    "platform_spread": 3,
+                    "privilege_to_usage_ratio": 0.0,
+                    "total_privileges": 0
+                },
+                "framework_violations": [
+                    "MITRE T1098"
+                ]
+            },
+            {
+                "emp_id": "emp_086",
+                "hybrid_risk_score": 87.31,
+                "ml_risk_score": 47.31,
                 "features": {
                     "access_frequency": 5,
                     "platform_spread": 2,
@@ -460,13 +555,13 @@
                 ]
             },
             {
-                "emp_id": "emp_088",
-                "hybrid_risk_score": 98.02,
-                "ml_risk_score": 58.02,
+                "emp_id": "emp_076",
+                "hybrid_risk_score": 78.06,
+                "ml_risk_score": 38.06,
                 "features": {
-                    "access_frequency": 5,
+                    "access_frequency": 4,
                     "platform_spread": 2,
-                    "privilege_to_usage_ratio": 0.4,
+                    "privilege_to_usage_ratio": 0.5,
                     "total_privileges": 2
                 },
                 "framework_violations": [
@@ -474,9 +569,37 @@
                 ]
             },
             {
-                "emp_id": "emp_074",
-                "hybrid_risk_score": 72.54,
-                "ml_risk_score": 32.54,
+                "emp_id": "emp_079",
+                "hybrid_risk_score": 78.06,
+                "ml_risk_score": 38.06,
+                "features": {
+                    "access_frequency": 4,
+                    "platform_spread": 2,
+                    "privilege_to_usage_ratio": 0.5,
+                    "total_privileges": 2
+                },
+                "framework_violations": [
+                    "MITRE T1098"
+                ]
+            },
+            {
+                "emp_id": "emp_087",
+                "hybrid_risk_score": 78.06,
+                "ml_risk_score": 38.06,
+                "features": {
+                    "access_frequency": 4,
+                    "platform_spread": 2,
+                    "privilege_to_usage_ratio": 0.5,
+                    "total_privileges": 2
+                },
+                "framework_violations": [
+                    "MITRE T1098"
+                ]
+            },
+            {
+                "emp_id": "emp_084",
+                "hybrid_risk_score": 70.13,
+                "ml_risk_score": 30.13,
                 "features": {
                     "access_frequency": 3,
                     "platform_spread": 2,
@@ -488,11 +611,11 @@
                 ]
             },
             {
-                "emp_id": "emp_255",
-                "hybrid_risk_score": 69.68,
-                "ml_risk_score": 29.68,
+                "emp_id": "emp_260",
+                "hybrid_risk_score": 65.91,
+                "ml_risk_score": 25.91,
                 "features": {
-                    "access_frequency": 3,
+                    "access_frequency": 5,
                     "platform_spread": 3,
                     "privilege_to_usage_ratio": 0.0,
                     "total_privileges": 0
@@ -504,124 +627,40 @@
         ]
     },
     {
-        "incident_id": "INC-104",
+        "incident_id": "INC-105",
         "title": "Anomalous Behavioral Activity (ML-Detected)",
         "severity": "CRITICAL",
-        "affected_identities_count": 16,
-        "llm_executive_summary": "Generic Placeholder: LLM Generation failed (429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 19.314286893s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '19s'}]}})",
+        "affected_identities_count": 8,
+        "llm_executive_summary": "The incident cluster 'Anomalous Behavioral Activity (ML-Detected)' has identified five employees with elevated risk scores, indicating potential security threats. The blast radius of this incident appears to be moderate, with the affected employees having a range of access frequencies and platform spreads. The hybrid risk scores, which combine multiple risk factors, range from 72.75 to 88.8, with the highest score belonging to employee 'emp_065'. This suggests that 'emp_065' poses the greatest potential risk, while the other employees, although still anomalous, may require further investigation to determine the extent of their risk.\n\nFurther analysis of the telemetry data reveals interesting correlations between the employees' access frequencies, platform spreads, and graph privileges. For example, 'emp_065' has an access frequency of 7 and a platform spread of 2, indicating that they have accessed multiple platforms frequently. In contrast, 'emp_057' has an access frequency of 4 and a platform spread of 1, suggesting more limited access. The privilege-to-usage ratios also provide insight, with 'emp_065' having a ratio of 0.286, indicating potential over-privileging. 'emp_116', on the other hand, has a ratio of 0.0, suggesting no privileges are being used. These correlations can help inform the investigation and potential remediation efforts. Notably, none of the employees have framework violations, which may indicate that the anomalous activity is not due to malicious intent, but rather potentially due to misconfiguration or misuse of privileges.\n\nTo immediately revoke access for the specific platforms involved, the following CLI/PowerShell commands can be executed. For AWS, run: `aws iam remove-user-from-group --user-name emp_065 --group-name Administrators` (repeat for each affected employee). For Active Directory (AD), run: `Remove-ADGroupMember -Identity Administrators -Members emp_065` (repeat for each affected employee). For Okta, run: `okta user group remove --user emp_065 --group Administrators` (repeat for each affected employee). Additionally, to revoke specific platform access, run: `aws iam delete-access-key --user-name emp_065 --access-key-id <access_key_id>` for AWS, `Set-ADAccountControl -Identity emp_065 -Enabled $false` for AD, and `okta user lifecycle deactivate --user emp_065` for Okta. These commands assume that the affected employees' usernames are the same across all platforms and that the Administrators group is the relevant group for revocation. Please note that these commands should be executed with caution and only after verifying the affected employees' identities and access rights.",
         "affected_users": [
             {
-                "emp_id": "emp_285",
-                "hybrid_risk_score": 100.0,
-                "ml_risk_score": 100.0,
-                "features": {
-                    "access_frequency": 10,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.0,
-                    "total_privileges": 0
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_085",
-                "hybrid_risk_score": 90.54,
-                "ml_risk_score": 90.54,
-                "features": {
-                    "access_frequency": 3,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.667,
-                    "total_privileges": 2
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_202",
-                "hybrid_risk_score": 88.87,
-                "ml_risk_score": 88.87,
-                "features": {
-                    "access_frequency": 5,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 0.0,
-                    "total_privileges": 0
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_038",
-                "hybrid_risk_score": 87.28,
-                "ml_risk_score": 87.28,
-                "features": {
-                    "access_frequency": 3,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 0.667,
-                    "total_privileges": 2
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_049",
-                "hybrid_risk_score": 87.28,
-                "ml_risk_score": 87.28,
-                "features": {
-                    "access_frequency": 3,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 0.667,
-                    "total_privileges": 2
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_079",
-                "hybrid_risk_score": 87.28,
-                "ml_risk_score": 87.28,
-                "features": {
-                    "access_frequency": 3,
-                    "platform_spread": 1,
-                    "privilege_to_usage_ratio": 0.667,
-                    "total_privileges": 2
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_077",
-                "hybrid_risk_score": 84.28,
-                "ml_risk_score": 84.28,
-                "features": {
-                    "access_frequency": 6,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.333,
-                    "total_privileges": 2
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_150",
-                "hybrid_risk_score": 79.6,
-                "ml_risk_score": 79.6,
-                "features": {
-                    "access_frequency": 9,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.0,
-                    "total_privileges": 0
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_184",
-                "hybrid_risk_score": 79.13,
-                "ml_risk_score": 79.13,
+                "emp_id": "emp_065",
+                "hybrid_risk_score": 88.8,
+                "ml_risk_score": 88.8,
                 "features": {
                     "access_frequency": 7,
                     "platform_spread": 2,
-                    "privilege_to_usage_ratio": 0.0,
-                    "total_privileges": 0
+                    "privilege_to_usage_ratio": 0.286,
+                    "total_privileges": 2
                 },
                 "framework_violations": []
             },
             {
-                "emp_id": "emp_256",
-                "hybrid_risk_score": 73.89,
-                "ml_risk_score": 73.89,
+                "emp_id": "emp_057",
+                "hybrid_risk_score": 82.24,
+                "ml_risk_score": 82.24,
+                "features": {
+                    "access_frequency": 4,
+                    "platform_spread": 1,
+                    "privilege_to_usage_ratio": 0.5,
+                    "total_privileges": 2
+                },
+                "framework_violations": []
+            },
+            {
+                "emp_id": "emp_116",
+                "hybrid_risk_score": 76.29,
+                "ml_risk_score": 76.29,
                 "features": {
                     "access_frequency": 8,
                     "platform_spread": 3,
@@ -631,74 +670,62 @@
                 "framework_violations": []
             },
             {
-                "emp_id": "emp_059",
-                "hybrid_risk_score": 72.68,
-                "ml_risk_score": 72.68,
+                "emp_id": "emp_070",
+                "hybrid_risk_score": 72.75,
+                "ml_risk_score": 72.75,
                 "features": {
-                    "access_frequency": 4,
-                    "platform_spread": 2,
-                    "privilege_to_usage_ratio": 0.5,
+                    "access_frequency": 3,
+                    "platform_spread": 1,
+                    "privilege_to_usage_ratio": 0.667,
                     "total_privileges": 2
                 },
                 "framework_violations": []
             },
             {
-                "emp_id": "emp_052",
-                "hybrid_risk_score": 67.4,
-                "ml_risk_score": 67.4,
+                "emp_id": "emp_074",
+                "hybrid_risk_score": 72.75,
+                "ml_risk_score": 72.75,
                 "features": {
-                    "access_frequency": 7,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.286,
+                    "access_frequency": 3,
+                    "platform_spread": 1,
+                    "privilege_to_usage_ratio": 0.667,
                     "total_privileges": 2
                 },
                 "framework_violations": []
             },
             {
-                "emp_id": "emp_053",
-                "hybrid_risk_score": 67.4,
-                "ml_risk_score": 67.4,
+                "emp_id": "emp_286",
+                "hybrid_risk_score": 70.31,
+                "ml_risk_score": 70.31,
                 "features": {
-                    "access_frequency": 7,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.286,
-                    "total_privileges": 2
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_090",
-                "hybrid_risk_score": 67.4,
-                "ml_risk_score": 67.4,
-                "features": {
-                    "access_frequency": 7,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.286,
-                    "total_privileges": 2
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_096",
-                "hybrid_risk_score": 67.4,
-                "ml_risk_score": 67.4,
-                "features": {
-                    "access_frequency": 7,
-                    "platform_spread": 3,
-                    "privilege_to_usage_ratio": 0.286,
-                    "total_privileges": 2
-                },
-                "framework_violations": []
-            },
-            {
-                "emp_id": "emp_118",
-                "hybrid_risk_score": 65.55,
-                "ml_risk_score": 65.55,
-                "features": {
-                    "access_frequency": 4,
+                    "access_frequency": 5,
                     "platform_spread": 1,
                     "privilege_to_usage_ratio": 0.0,
                     "total_privileges": 0
+                },
+                "framework_violations": []
+            },
+            {
+                "emp_id": "emp_104",
+                "hybrid_risk_score": 67.46,
+                "ml_risk_score": 67.46,
+                "features": {
+                    "access_frequency": 4,
+                    "platform_spread": 3,
+                    "privilege_to_usage_ratio": 0.25,
+                    "total_privileges": 1
+                },
+                "framework_violations": []
+            },
+            {
+                "emp_id": "emp_061",
+                "hybrid_risk_score": 67.38,
+                "ml_risk_score": 67.38,
+                "features": {
+                    "access_frequency": 6,
+                    "platform_spread": 3,
+                    "privilege_to_usage_ratio": 0.333,
+                    "total_privileges": 2
                 },
                 "framework_violations": []
             }

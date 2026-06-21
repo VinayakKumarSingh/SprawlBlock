@@ -2,14 +2,9 @@ import json
 import os
 import time
 from dotenv import load_dotenv
+from groq import Groq
 
 load_dotenv()
-os.getenv("GEMINI_API_KEY")
-
-try:
-    from google import genai
-except ImportError:
-    genai = None
 
 def load_risk_report(filepath):
     """Loads the risk_report.json file."""
@@ -20,16 +15,15 @@ def generate_remediation_narrative(cluster_title, affected_users):
     """
     Generates an LLM-powered executive summary and remediation steps for the incident.
     """
-    api_key = os.environ.get('GEMINI_API_KEY')
-    if not api_key or genai is None:
-        return "Generic Placeholder: Set GEMINI_API_KEY to generate LLM narratives."
+    api_key = os.environ.get('GROQ_API_KEY')
+    if not api_key:
+        return "Generic Placeholder: Set GROQ_API_KEY to generate LLM narratives."
 
     try:
-        client = genai.Client(api_key=api_key)
+        client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
         
-        # For a massive cluster, passing all users directly might exceed limits.
-        sample_users = affected_users[:5]
-        json_data = json.dumps(sample_users, indent=2)
+        # Ensure you truncate the payload to save token limits
+        json_data = json.dumps(affected_users[:5], indent=2)
         
         prompt = (
             f"You are a Cloud Security Architect responding to an incident cluster titled '{cluster_title}'. "
@@ -40,19 +34,11 @@ def generate_remediation_narrative(cluster_title, affected_users):
             f"Paragraph 3: Explicit, copy-pasteable CLI/PowerShell commands to immediately revoke access for the specific platforms involved (AWS, AD, Okta)."
         )
         
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                response = client.models.generate_content(
-                    model='gemini-2.5-flash',
-                    contents=prompt
-                )
-                return response.text
-            except Exception as e:
-                if ("503" in str(e) or "429" in str(e)) and attempt < max_retries - 1:
-                    time.sleep(2 ** attempt)
-                    continue
-                raise e
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return response.choices[0].message.content
     except Exception as e:
         return f"Generic Placeholder: LLM Generation failed ({str(e)})"
 
@@ -108,7 +94,7 @@ def generate_incidents(risk_data):
             severity = "CRITICAL"
             
         llm_narrative = generate_remediation_narrative(title, users)
-        time.sleep(4)
+        time.sleep(3)
             
         incident = {
             "incident_id": f"INC-{incident_counter}",

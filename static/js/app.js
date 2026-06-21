@@ -1184,13 +1184,23 @@ async function renderMainGraphExplorer(empId) {
         state.mainVisNetwork = null;
     }
     
+    // Remove any temporary error state from previous failed runs
+    const oldError = document.getElementById('main-graph-error-state');
+    if (oldError) {
+        oldError.remove();
+    }
+    
     if (!empId) {
-        emptyState.classList.remove('hidden');
+        if (emptyState) {
+            emptyState.classList.remove('hidden');
+        }
         inspector.style.display = 'none';
         return;
     }
     
-    emptyState.classList.add('hidden');
+    if (emptyState) {
+        emptyState.classList.add('hidden');
+    }
     
     // Create loading display
     const loader = document.createElement('div');
@@ -1202,7 +1212,18 @@ async function renderMainGraphExplorer(empId) {
     if (loader) loader.remove();
     
     if (!details || !details.graph || details.graph.nodes.length === 0) {
-        canvasContainer.innerHTML = '<div class="empty-state">Failed to build entitlement graph for this user.</div>';
+        // Create a separate temporary error element that can be safely removed on next run
+        const errorDiv = document.createElement('div');
+        errorDiv.id = 'main-graph-error-state';
+        errorDiv.className = 'empty-state';
+        errorDiv.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5" width="48" height="48">
+                <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+            </svg>
+            <h4>Failed to build entitlement graph for this user.</h4>
+            <p class="text-muted">No graph data was returned or the user has no entitlements.</p>
+        `;
+        canvasContainer.appendChild(errorDiv);
         return;
     }
     
