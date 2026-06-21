@@ -3,3 +3,7 @@ PROBLEM STATEMENTS SOCGEN.md
 /__pycache__
 .env
 __pycache__/
+generate_docx.py
+documentation.docx
+.DS_Store
+Flow_diagram.png
