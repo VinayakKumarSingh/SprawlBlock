@@ -16,7 +16,8 @@ const state = {
         page: 0,
         pageSize: 15
     },
-    visNetwork: null // Vis.js network instance
+    visNetwork: null, // Vis.js drawer network instance
+    mainVisNetwork: null // Vis.js main explorer network instance
 };
 
 // Initialization on DOM load
@@ -55,6 +56,7 @@ function setupTabNavigation() {
             else if (targetTab === 'incidents') viewTitle.textContent = "Incident Remediation Console";
             else if (targetTab === 'heatmap') viewTitle.textContent = "Cross-Platform Privilege Heatmap";
             else if (targetTab === 'risk-list') viewTitle.textContent = "Identity Risk Directory";
+            else if (targetTab === 'graph-explorer') viewTitle.textContent = "Entitlement Graph Explorer";
             
             // Perform tab-specific refreshes
             if (targetTab === 'overview') {
@@ -65,6 +67,8 @@ function setupTabNavigation() {
                 loadHeatmapData();
             } else if (targetTab === 'risk-list') {
                 loadRiskListData();
+            } else if (targetTab === 'graph-explorer') {
+                loadGraphExplorerData();
             }
         });
     });
@@ -186,6 +190,24 @@ function setupEventHandlers() {
         document.getElementById('heatmap-filtered-card').classList.add('hidden');
         document.querySelectorAll('.heatmap-cell').forEach(c => c.classList.remove('active-filter'));
     });
+
+    // Graph Explorer User Selection Change
+    const graphUserSelect = document.getElementById('select-graph-user');
+    if (graphUserSelect) {
+        graphUserSelect.addEventListener('change', (e) => {
+            renderMainGraphExplorer(e.target.value);
+        });
+    }
+
+    // Graph Explorer fit button
+    const fitMainGraphBtn = document.getElementById('btn-fit-main-graph');
+    if (fitMainGraphBtn) {
+        fitMainGraphBtn.addEventListener('click', () => {
+            if (state.mainVisNetwork) {
+                state.mainVisNetwork.fit();
+            }
+        });
+    }
 }
 
 // 3. API Loaders
@@ -1093,8 +1115,330 @@ async function reloadDashboardOnRemediation() {
         // recalculate filters in background
         if (state.activeTab === 'risk-list') {
             applyRiskFilters();
+        } else if (state.activeTab === 'graph-explorer') {
+            const currentSel = document.getElementById('select-graph-user').value;
+            loadGraphExplorerData();
+            if (currentSel) {
+                document.getElementById('select-graph-user').value = currentSel;
+                renderMainGraphExplorer(currentSel);
+            }
         }
     }
 }
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// 10. MAIN GRAPH EXPLORER MODULE
+async function loadGraphExplorerData() {
+    const identities = await apiFetch('/api/identities');
+    if (!identities) return;
+    
+    state.identities = identities;
+    const select = document.getElementById('select-graph-user');
+    const currentValue = select.value;
+    
+    select.innerHTML = '<option value="">Choose an Employee...</option>';
+    
+    // Sort identities by hybrid risk score descending
+    const sorted = [...identities].sort((a, b) => b.hybrid_risk_score - a.hybrid_risk_score);
+    
+    sorted.forEach(user => {
+        const opt = document.createElement('option');
+        opt.value = user.emp_id;
+        opt.textContent = `${user.emp_id} - ${user.title} (${user.department}) - Risk: ${user.hybrid_risk_score}`;
+        select.appendChild(opt);
+    });
+    
+    if (currentValue) {
+        select.value = currentValue;
+    }
+    
+    // Populate Quick Links with top 4 riskiest identities
+    const quickLinksContainer = document.getElementById('graph-quick-links');
+    quickLinksContainer.innerHTML = '';
+    
+    const top4 = sorted.slice(0, 4);
+    top4.forEach(user => {
+        const btn = document.createElement('button');
+        btn.className = `btn btn-secondary btn-sm ${getRiskBadgeClass(user.hybrid_risk_score)}`;
+        btn.style.color = '#f8fafc';
+        btn.style.border = '1px solid var(--border-color)';
+        btn.textContent = user.emp_id;
+        btn.addEventListener('click', () => {
+            select.value = user.emp_id;
+            renderMainGraphExplorer(user.emp_id);
+        });
+        quickLinksContainer.appendChild(btn);
+    });
+}
+
+async function renderMainGraphExplorer(empId) {
+    const canvasContainer = document.getElementById('main-graph-canvas');
+    const emptyState = document.getElementById('main-graph-empty-state');
+    const inspector = document.getElementById('main-graph-inspector');
+    const inspectorContent = document.getElementById('main-graph-inspector-content');
+    
+    // Clear old main vis instance
+    if (state.mainVisNetwork) {
+        state.mainVisNetwork.destroy();
+        state.mainVisNetwork = null;
+    }
+    
+    if (!empId) {
+        emptyState.classList.remove('hidden');
+        inspector.style.display = 'none';
+        return;
+    }
+    
+    emptyState.classList.add('hidden');
+    
+    // Create loading display
+    const loader = document.createElement('div');
+    loader.className = 'loading-overlay';
+    loader.textContent = `Building entitlement mapping network for ${empId}...`;
+    canvasContainer.appendChild(loader);
+    
+    const details = await apiFetch(`/api/identity/${empId}`);
+    if (loader) loader.remove();
+    
+    if (!details || !details.graph || details.graph.nodes.length === 0) {
+        canvasContainer.innerHTML = '<div class="empty-state">Failed to build entitlement graph for this user.</div>';
+        return;
+    }
+    
+    const graphData = details.graph;
+    
+    // Map raw data into Vis.js Nodes
+    const visNodes = graphData.nodes.map(n => {
+        let nodeColor = { background: '#1e293b', border: '#334155' };
+        let nodeShape = 'box';
+        let borderWidth = 1.5;
+        
+        if (n.type === 'identity') {
+            nodeShape = 'ellipse';
+            nodeColor = { background: '#2563eb', border: '#1d4ed8' };
+            borderWidth = 2.5;
+        } else if (n.type === 'account') {
+            nodeShape = 'box';
+            const borderCol = n.status === 'Active' ? '#10b981' : '#64748b';
+            
+            if (n.platform === 'AD') {
+                nodeColor = { background: '#1e3a8a', border: borderCol };
+            } else if (n.platform === 'AWS') {
+                nodeColor = { background: '#7c2d12', border: borderCol };
+            } else {
+                nodeColor = { background: '#0f172a', border: borderCol };
+            }
+            borderWidth = 2;
+        } else if (n.type === 'group') {
+            nodeShape = 'hexagon';
+            nodeColor = { background: '#5b21b6', border: '#7c3aed' };
+        } else if (n.type === 'permission') {
+            nodeShape = 'diamond';
+            const isAdmin = n.label.toLowerCase().includes('admin');
+            nodeColor = isAdmin 
+                ? { background: '#7f1d1d', border: '#ef4444' }
+                : { background: '#064e3b', border: '#34d399' };
+        }
+        
+        return {
+            id: n.id,
+            label: n.label,
+            shape: nodeShape,
+            color: {
+                background: nodeColor.background,
+                border: nodeColor.border,
+                highlight: {
+                    background: '#4f46e5',
+                    border: '#6366f1'
+                }
+            },
+            borderWidth: borderWidth,
+            font: {
+                color: '#f8fafc',
+                size: 11,
+                face: 'Inter, system-ui'
+            },
+            margin: 10,
+            rawData: n
+        };
+    });
+    
+    // Map edges
+    const visEdges = graphData.edges.map(e => {
+        let edgeColor = '#475569';
+        let edgeDashes = false;
+        
+        if (e.type === 'entitlement') {
+            edgeColor = '#f43f5e';
+        } else if (e.type === 'mapping') {
+            edgeColor = '#818cf8';
+            edgeDashes = true;
+        }
+        
+        return {
+            from: e.from,
+            to: e.to,
+            color: edgeColor,
+            arrows: {
+                to: { enabled: true, scaleFactor: 0.8 }
+            },
+            dashes: edgeDashes,
+            width: 1.5
+        };
+    });
+    
+    const visData = {
+        nodes: new vis.DataSet(visNodes),
+        edges: new vis.DataSet(visEdges)
+    };
+    
+    const options = {
+        nodes: {
+            margin: 8,
+            shadow: false
+        },
+        edges: {
+            smooth: {
+                type: 'cubicBezier',
+                forceDirection: 'vertical',
+                roundness: 0.4
+            }
+        },
+        physics: {
+            hierarchicalRepulsion: {
+                nodeDistance: 130
+            },
+            stabilization: {
+                iterations: 150
+            }
+        },
+        layout: {
+            hierarchical: {
+                direction: 'UD',
+                sortMethod: 'directed',
+                nodeSpacing: 160,
+                levelCalculationMethod: 'hubsize'
+            }
+        },
+        interaction: {
+            hover: true,
+            zoomView: true,
+            dragView: true
+        }
+    };
+    
+    state.mainVisNetwork = new vis.Network(canvasContainer, visData, options);
+    
+    inspector.style.display = 'block';
+    inspectorContent.innerHTML = `
+        <div style="margin-top:20px; text-align:center;" class="text-muted">
+            <p class="text-sm">Graph loaded successfully for <strong>${empId}</strong>.</p>
+            <p class="text-xs" style="margin-top:8px;">Click any node to inspect entitlement details.</p>
+        </div>
+    `;
+    
+    state.mainVisNetwork.once('stabilizationFinished', () => {
+        state.mainVisNetwork.fit();
+    });
+    
+    state.mainVisNetwork.on('click', (params) => {
+        if (params.nodes && params.nodes.length > 0) {
+            const nodeId = params.nodes[0];
+            const nodeData = visData.nodes.get(nodeId);
+            const n = nodeData.rawData;
+            
+            let htmlContent = '';
+            
+            if (n.type === 'identity') {
+                htmlContent = `
+                    <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Node Type</span>
+                            <span class="badge badge-low" style="margin-top:4px;">HUMAN IDENTITY</span>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Employee ID</span>
+                            <strong style="font-size:14px; color:var(--text-primary);">${n.id}</strong>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Job Title</span>
+                            <span class="text-sm" style="display:block; margin-top:2px;">${n.title || 'N/A'}</span>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Department</span>
+                            <span class="text-sm" style="display:block; margin-top:2px;">${n.department || 'N/A'}</span>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">HR Employment Status</span>
+                            <span class="badge ${n.status === 'Active' ? 'badge-active' : 'badge-disabled'}" style="margin-top:4px;">${n.status}</span>
+                        </div>
+                    </div>
+                `;
+            } else if (n.type === 'account') {
+                htmlContent = `
+                    <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Node Type</span>
+                            <span class="badge badge-medium" style="margin-top:4px;">PLATFORM ACCOUNT</span>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Account ID</span>
+                            <strong style="font-size:12px; font-family:monospace; color:var(--text-primary); word-break:break-all;">${n.id}</strong>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Platform Provider</span>
+                            <span class="text-sm" style="display:block; margin-top:2px; font-weight:500; color:var(--primary);">${n.platform}</span>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Account Status</span>
+                            <span class="badge ${n.status === 'Active' ? 'badge-active' : 'badge-disabled'}" style="margin-top:4px;">${n.status}</span>
+                        </div>
+                    </div>
+                `;
+            } else if (n.type === 'group') {
+                htmlContent = `
+                    <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Node Type</span>
+                            <span class="badge badge-high" style="margin-top:4px;">GROUP / ROLE BINDING</span>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Group ID</span>
+                            <strong style="font-size:12px; font-family:monospace; color:var(--text-primary);">${n.id}</strong>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Platform Context</span>
+                            <span class="text-sm" style="display:block; margin-top:2px; font-weight:500;">${n.platform || 'N/A'}</span>
+                        </div>
+                    </div>
+                `;
+            } else if (n.type === 'permission') {
+                const isAdmin = n.label.toLowerCase().includes('admin');
+                htmlContent = `
+                    <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Node Type</span>
+                            <span class="badge ${isAdmin ? 'badge-critical' : 'badge-active'}" style="margin-top:4px;">TERMINAL PERMISSION</span>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Entitlement Name</span>
+                            <strong style="font-size:13px; color:var(--text-primary);">${n.id}</strong>
+                        </div>
+                        <div>
+                            <span class="text-muted text-xs uppercase" style="display:block; font-weight:600; font-size:10px;">Permission Level</span>
+                            <span class="text-sm ${isAdmin ? 'text-critical' : 'text-success'}" style="display:block; margin-top:2px; font-weight:600;">${isAdmin ? 'ADMINISTRATOR (HIGH RISK)' : 'STANDARD/USER'}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            inspectorContent.innerHTML = htmlContent;
+        } else {
+            inspectorContent.innerHTML = `
+                <div style="margin-top:20px; text-align:center;" class="text-muted">
+                    <p class="text-xs">Click any node to inspect entitlement details.</p>
+                </div>
+            `;
+        }
+    });
+}
