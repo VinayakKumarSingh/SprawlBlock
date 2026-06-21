@@ -51,6 +51,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
                     <span>Identity Risk List</span>
                 </button>
+                <button class="nav-item" data-tab="graph-explorer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v8M9 12h6"/></svg>
+                    <span>Identity Graph</span>
+                </button>
             </nav>
             
             <div class="sidebar-footer">
@@ -347,6 +351,47 @@
                             <div class="pagination-buttons">
                                 <button id="btn-prev-page" class="btn btn-secondary btn-sm" disabled>Previous</button>
                                 <button id="btn-next-page" class="btn btn-secondary btn-sm" disabled>Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. GRAPH EXPLORER TAB -->
+                <section id="tab-graph-explorer" class="tab-pane">
+                    <div class="card" style="height: calc(100vh - 145px); display: flex; flex-direction: column;">
+                        <div class="card-header filter-row" style="flex-wrap: nowrap; justify-content: flex-start; gap: 20px;">
+                            <div class="filter-group">
+                                <label for="select-graph-user">Select Identity to Map</label>
+                                <select id="select-graph-user" style="min-width: 250px;">
+                                    <option value="">Choose an Employee...</option>
+                                </select>
+                            </div>
+                            <div class="filter-group" style="flex-grow: 1;">
+                                <label>Quick Links (Riskiest Identities)</label>
+                                <div id="graph-quick-links" style="display: flex; gap: 8px;">
+                                    <!-- High risk shortcuts -->
+                                </div>
+                            </div>
+                            <button id="btn-fit-main-graph" class="btn btn-secondary btn-sm">Zoom to Fit</button>
+                        </div>
+                        <div class="card-body flex-grow-1" style="position: relative; padding: 0; display: flex; overflow: hidden; height: 100%;">
+                            <!-- Left Side: Graph Canvas -->
+                            <div id="main-graph-canvas" style="flex-grow: 1; height: 100%; background-color: var(--bg-sidebar); position: relative;">
+                                <div class="empty-state" id="main-graph-empty-state">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+                                        <circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/>
+                                    </svg>
+                                    <h4>No Identity Selected for Graph Mapping</h4>
+                                    <p class="text-muted">Select an employee from the dropdown above or click a quick link to inspect downstream accounts, groups, and permissions.</p>
+                                </div>
+                            </div>
+                            <!-- Right Side: Node Inspector Panel -->
+                            <div class="graph-inspector-panel" id="main-graph-inspector" style="width: 280px; border-left: 1px solid var(--border-color); background-color: var(--bg-sidebar); padding: 20px; overflow-y: auto; display: none;">
+                                <h4 style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">Selected Node Info</h4>
+                                <div id="main-graph-inspector-content">
+                                    <!-- Filled dynamically -->
+                                    <span class="text-muted text-sm">Click a node in the graph to inspect properties.</span>
+                                </div>
                             </div>
                         </div>
                     </div>
